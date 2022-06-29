@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-
 const UserSchema = mongoose.Schema(
     {
         username: {
@@ -21,7 +20,7 @@ const UserSchema = mongoose.Schema(
         },
         isAdmin: {
             type: Boolean,
-            default: false
+            default: false,
         },
         profilePicture: String,
         coverPicture: String,
@@ -29,11 +28,12 @@ const UserSchema = mongoose.Schema(
         livesIn: String,
         worksAt: String,
         relationship: String,
+        country: String,
         followers: [],
         following: [],
     },
-    {timestamps: true}
-)
+    { timestamps: true }
+);
 
-const UserModel = mongoose.model("Users", UserSchema)
-export default UserModel
+const UserModel = mongoose.model("Users", UserSchema);
+export default UserModel;

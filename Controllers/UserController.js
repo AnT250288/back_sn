@@ -1,5 +1,6 @@
 import UserModel from "../Models/userModel.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 
 export const getUser = async (req, res) => {
@@ -18,26 +19,35 @@ export const getUser = async (req, res) => {
 }
 
 export const updateUser = async (req, res) => {
-    const id = req.params.id
-    const {currentUserId, currentUserAdminStatus, password} = req.body
-    if (id === currentUserId || currentUserAdminStatus) {
+    const id = req.params.id;
+    const { _id, password } = req.body;
+
+    if (id === _id) {
         try {
             if (password) {
-                const salt = await bcrypt.genSalt(10)
-                req.body.password = await bcrypt.hash(password, salt)
+                const salt = await bcrypt.genSalt(10);
+                req.body.password = await bcrypt.hash(password, salt);
             }
-
-            const user = await UserModel.findOneAndUpdate(id, req.body, {new: true})
-
-
-            res.status(200).json(user)
+            const user = await UserModel.findByIdAndUpdate(id, req.body, {
+                new: true,
+            });
+            const token = jwt.sign(
+                { username: user.username, id: user._id },
+                process.env.SECRET_KEY,
+                { expiresIn: "1h" }
+            );
+            console.log({user, token})
+            res.status(200).json({user, token});
         } catch (error) {
-            res.status(500).json(error)
+            console.log(error)
+            res.status(500).json(error);
         }
     } else {
-        res.status(403).json("Access Denied!")
+        res
+            .status(403)
+            .json("Access Denied! You can update only your own Account.");
     }
-}
+};;
 
 
 export const deleteUser = async (req, res) => {

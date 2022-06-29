@@ -3,6 +3,7 @@ import {loginUser, registerUser} from "../Controllers/AuthController.js";
 
 
 const router = express.Router()
+
 router
     .post('/register', registerUser)
     .post('/login', loginUser)

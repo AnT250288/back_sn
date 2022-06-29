@@ -8,7 +8,7 @@ export const createPost = async (req, res) => {
 
     try {
         await newPost.save()
-        res.status(200).json("Post created!")
+        res.status(200).json(newPost)
     } catch (error) {
         res.status(500).json(error)
     }
@@ -48,7 +48,6 @@ export const deletePost = async (req, res) => {
     const id = req.params.id
     const {userId} = req.body
 
-
     try {
         const post = await PostModel.findById(id)
         if (post.userId === userId) {
@@ -86,7 +85,7 @@ export const getTimelinePosts = async (req, res) => {
     const userId = req.params.id;
 
     try {
-        const currentUserPosts = await PostModel.find({ userId: userId });
+        const currentUserPosts = await PostModel.find({userId: userId});
         const followingPosts = await UserModel.aggregate([
             {
                 $match: {
@@ -112,7 +111,7 @@ export const getTimelinePosts = async (req, res) => {
         res
             .status(200)
             .json(currentUserPosts.concat(...followingPosts[0].followingPosts)
-                .sort((a,b)=>{
+                .sort((a, b) => {
                     return b.createdAt - a.createdAt;
                 })
             );
