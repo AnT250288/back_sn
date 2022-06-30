@@ -63,23 +63,21 @@ export const deletePost = async (req, res) => {
 
 
 export const likePost = async (req, res) => {
-    const id = req.params.id
-    const {userId} = req.body
+    const id = req.params.id;
+    const {userId} = req.body;
     try {
-        const post = await PostModel.findById(id)
-        if (!post.likes.includes(userId)) {
-            await post.updateOne({$push: {likes: userId}})
-            res.status(200).json("Post liked!")
+        const post = await PostModel.findById(id);
+        if (post.likes.includes(userId)) {
+            await post.updateOne({$pull: {likes: userId}});
+            res.status(200).json("Post disliked");
         } else {
-            await post.updateOne({$pull: {likes: userId}})
-            res.status(200).json("Post unliked!")
+            await post.updateOne({$push: {likes: userId}});
+            res.status(200).json("Post liked");
         }
-
-
     } catch (error) {
-        res.status(500).json(error)
+        res.status(500).json(error);
     }
-}
+};
 
 export const getTimelinePosts = async (req, res) => {
     const userId = req.params.id;
@@ -87,11 +85,7 @@ export const getTimelinePosts = async (req, res) => {
     try {
         const currentUserPosts = await PostModel.find({userId: userId});
         const followingPosts = await UserModel.aggregate([
-            {
-                $match: {
-                    _id: new mongoose.Types.ObjectId(userId),
-                },
-            },
+            {$match: {_id: new mongoose.Types.ObjectId(userId)}},
             {
                 $lookup: {
                     from: "posts",
