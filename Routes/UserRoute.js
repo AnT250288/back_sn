@@ -8,9 +8,10 @@ const router = express.Router()
 router
     .get('/:id', getUser)
     .get('/', getAllUsers)
-    .put('/:id', authMiddleware, updateUser)
-    .delete('/:id', authMiddleware, deleteUser)
-    .put('/:id/follow', authMiddleware, followUser)
-    .put('/:id/unfollow', authMiddleware, unfollowUser)
+    .put('/:id',authMiddleware, updateUser)
+    .delete('/:id',authMiddleware, deleteUser)
+    .put('/:id/follow',authMiddleware, followUser)
+    .put('/:id/unfollow',authMiddleware, unfollowUser)
+
 
 export default router
